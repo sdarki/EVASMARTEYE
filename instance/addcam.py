@@ -44,7 +44,7 @@ def add_cameras():
         )
     """)
     # Insert only the specified cameras
-    camera_ips = ["192.168.3.26", "192.168.3.16", "192.168.3.14"]
+    camera_ips = ["192.168.3.26", "192.168.3.16", "192.168.3.14","192.168.3.18", "192.168.3.15", "192.168.3.11"]
     for idx, ip in enumerate(camera_ips, start=1):
         name = f"Camera_{idx}"
         c.execute("INSERT INTO Camera (name, ip) VALUES (?, ?)", (name, ip))

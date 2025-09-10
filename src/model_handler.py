@@ -7,5 +7,5 @@ class ModelHandler:
         print("Model loaded:", self.model)
 
     def infer(self, frame):
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        return self.model(frame_rgb, device="intel:gpu")
+        # No color conversion needed if model expects BGR
+        return self.model(frame, device="intel:gpu")
