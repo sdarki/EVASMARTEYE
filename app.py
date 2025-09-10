@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from src import detection
+from src.run_detection import run_detection as run_detection_pipeline
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "your_secret_key_here"
@@ -80,16 +80,16 @@ def delete_camera(camera_id):
     db.session.commit()
     return redirect(url_for("cameras"))
 
-def run_detection():
+def start_detection_thread():
     with app.app_context():
         cameras = Camera.query.all()
-        detection.run_detection(cameras)
-		
+        run_detection_pipeline(cameras)
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
         if not User.query.filter_by(username="admin").first():
             db.session.add(User(username="admin", password=generate_password_hash("admin123")))
             db.session.commit()
-    threading.Thread(target=run_detection, daemon=True).start()
+    threading.Thread(target=start_detection_thread, daemon=True).start()
     app.run(host="0.0.0.0", port=5001, debug=True)
