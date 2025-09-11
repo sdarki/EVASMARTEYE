@@ -3,7 +3,7 @@ import cv2
 import time
  
 # Load the exported OpenVINO model
-ov_model = YOLO("best_openvino_model/")
+ov_model = YOLO("best_openvino_model_s_series/")
  
 # Open the video file
 cap = cv2.VideoCapture("clip.mp4")

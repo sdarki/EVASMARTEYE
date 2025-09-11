@@ -1,16 +1,20 @@
-import time
-from src.frame_reader import cv2_frame_reader
+from src.frame_reader import ffmpeg_frame_reader
+import queue
 
 def producer(rtsp_url, frame_queue, stats, cam_name, lock):
-    while True:
+    print(f"[{cam_name}] Producer started")
+    for frame in ffmpeg_frame_reader(rtsp_url):
+        with lock:
+            stats[cam_name]["frames_received"] += 1
         try:
-            for frame in cv2_frame_reader(rtsp_url):
-                if not frame_queue.full():
-                    frame_queue.put((frame, cam_name))
-                    with lock:
-                        stats[cam_name]["frames_received"] += 1
-            print(f"[{cam_name}] Stream ended, restarting in 5s...")
-            time.sleep(5)
-        except Exception as e:
-            print(f"[{cam_name}] Producer error: {e}, restarting in 5s...")
-            time.sleep(5)
+            # Always keep only the freshest frame
+            if frame_queue.full():
+                try:
+                    frame_queue.get_nowait()  # discard oldest frame
+                except queue.Empty:
+                    pass
+            frame_queue.put_nowait(frame)
+        except:
+            print(f"[{cam_name}] Frame queue error, dropping frame...")
+    frame_queue.put(None)  # signal consumer to stop
+    print(f"[{cam_name}] Producer stopped")

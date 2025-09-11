@@ -1,0 +1,23 @@
+description: Ultralytics YOLO11s model trained on safety-helmet-2/data.yaml
+author: Ultralytics
+date: '2025-09-09T12:35:56.293613'
+version: 8.3.194
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 736
+- 1280
+names:
+  0: hat
+  1: person
+args:
+  batch: 1
+  fraction: 1.0
+  half: false
+  int8: false
+  dynamic: false
+  nms: false
+channels: 3
